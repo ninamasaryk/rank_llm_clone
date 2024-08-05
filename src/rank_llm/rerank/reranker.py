@@ -283,7 +283,7 @@ def extract_kwargs(
     ]
 
     # Check that type of provided kwarg is compatible with the provided default type
-    for i, extracted_kwarg in enumerate(extract_kwargs):
+    for i, extracted_kwarg in enumerate(extracted_kwargs):
         if type(keys_and_defaults[i[-1]]) != None and (
             type(extracted_kwarg) != type(keys_and_defaults[i[-1]])
         ):

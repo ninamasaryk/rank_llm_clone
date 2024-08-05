@@ -59,5 +59,6 @@ include = [
     "rank_llm.evaluation",
     "rank_llm.rerank",
     "rank_llm.retrieve",
+    "rank_llm.rerank.*"
 ]
 namespaces = false

@@ -1,5 +1,5 @@
 from .indices_dict import INDICES
-# from .pyserini_retriever import PyseriniRetriever, RetrievalMethod
+from .pyserini_retriever import PyseriniRetriever, RetrievalMethod
 from .repo_info import HITS_INFO
 from .retriever import RetrievalMode, Retriever
 from .service_retriever import ServiceRetriever
@@ -16,7 +16,7 @@ __all__ = [
     "TOPICS",
     "HITS_INFO",
     "RetrievalMethod",
-    # "PyseriniRetriever",
+    "PyseriniRetriever",
     "ServiceRetriever",
     "Retriever",
     "RetrievalMode",

@@ -52,7 +52,7 @@ import os
 import sys
 from collections import defaultdict
 
-from pyserini.search import LuceneSearcher, get_qrels, get_topics
+# from pyserini.search import LuceneSearcher, get_qrels, get_topics
 from tqdm import tqdm
 
 from rank_llm.retrieve import TOPICS
@@ -89,15 +89,15 @@ def load_tsv_file(file_path):
 
 def load_pyserini_indexer(collection_file, trec_data, topk):
     examples = {}
-    index_reader = LuceneSearcher.from_prebuilt_index(collection_file)
+    # index_reader = LuceneSearcher.from_prebuilt_index(collection_file)
     for qid, hits in tqdm(trec_data.items()):
         rank = 0
         for hit in hits:
             rank += 1
             if rank > topk:
                 break
-            document = index_reader.doc(hit["docid"])
-            content = json.loads(document.raw())
+            # document = index_reader.doc(hit["docid"])
+            # content = json.loads(document.raw())
             if "title" in content:
                 # content = (
                 #     "Title: " + content["title"] + " " +
@@ -117,15 +117,15 @@ def generate_retrieve_results(
     trec_file, collection_file, query_file, topk=100, output_trec_file=None
 ):
     if query_file in TOPICS:
-        if TOPICS[query_file] == "dl22-passage":
-            query_data = get_topics("dl22")
-        elif TOPICS[query_file] == "dl21-passage":
-            query_data = get_topics("dl21")
-        else:
-            query_data = get_topics(TOPICS[query_file])
+        # if TOPICS[query_file] == "dl22-passage":
+        #     query_data = get_topics("dl22")
+        # elif TOPICS[query_file] == "dl21-passage":
+        #     query_data = get_topics("dl21")
+        # else:
+        #     query_data = get_topics(TOPICS[query_file])
         for qid, query in query_data.items():
             query_data[qid] = query["title"]
-        qrels = get_qrels(TOPICS[query_file])
+        # qrels = get_qrels(TOPICS[query_file])
         print(f"Loaded {len(query_data)} queries from {query_file}")
         print(f"Loaded {len(qrels)} qrels from {query_file}")
     else:

@@ -7,7 +7,7 @@ parent = os.path.dirname(parent)
 sys.path.append(parent)
 
 from rank_llm.retrieve.pyserini_retriever import (
-    PyseriniRetriever,
+    # PyseriniRetriever,
     RetrievalMethod,
     evaluate_retrievals,
 )
@@ -24,8 +24,8 @@ def main():
                     RetrievalMethod.BM25_RM3,
                 ]:
                     continue
-            retriever = PyseriniRetriever(dataset, retrieval_method)
-            retriever.retrieve_and_store()
+            # retriever = PyseriniRetriever(dataset, retrieval_method)
+            # retriever.retrieve_and_store()
     evaluate_retrievals()
 
 

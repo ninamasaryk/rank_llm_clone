@@ -3,7 +3,7 @@ import os
 import urllib.request
 from urllib.parse import urlparse
 
-from pyserini.util import *
+# from pyserini.util import *
 
 
 def no_bool_convert(pairs):

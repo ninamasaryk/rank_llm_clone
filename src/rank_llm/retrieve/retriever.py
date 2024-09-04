@@ -9,7 +9,7 @@ from dacite import from_dict
 from rank_llm.data import Request
 from rank_llm.retrieve.utils import compute_md5, download_cached_hits
 
-from . import HITS_INFO, PyseriniRetriever, RetrievalMethod
+from . import HITS_INFO, RetrievalMethod
 
 
 class RetrievalMode(Enum):
@@ -164,10 +164,10 @@ class Retriever:
                                 )
                     except:
                         print(f"Retrieving with dataset {self._dataset}")
-                        pyserini = PyseriniRetriever(
-                            self._dataset, self._retrieval_method
-                        )
-                        retrieved_results = pyserini.retrieve_and_store(k=k)
+                        # pyserini = PyseriniRetriever(
+                        #     self._dataset, self._retrieval_method
+                        # )
+                        # retrieved_results = pyserini.retrieve_and_store(k=k)
             else:
                 print("Reusing existing retrieved results.")
                 md5_local = compute_md5(candidates_file)
@@ -189,16 +189,16 @@ class Retriever:
             )
             if not candidates_file.is_file():
                 print(f"Retrieving with dataset {self._dataset}")
-                pyserini = PyseriniRetriever(
-                    dataset=self._dataset,
-                    retrieval_method=self._retrieval_method,
-                    index_path=self._index_path,
-                    topics_path=self._topics_path,
-                    index_type=self._index_type,
-                    encoder=self._encoder,
-                    onnx=self._onnx,
-                )
-                retrieved_results = pyserini.retrieve_and_store(k=k)
+                # pyserini = PyseriniRetriever(
+                #     dataset=self._dataset,
+                #     retrieval_method=self._retrieval_method,
+                #     index_path=self._index_path,
+                #     topics_path=self._topics_path,
+                #     index_type=self._index_type,
+                #     encoder=self._encoder,
+                #     onnx=self._onnx,
+                # )
+                # retrieved_results = pyserini.retrieve_and_store(k=k)
             else:
                 print("Reusing existing retrieved results.")
                 with open(candidates_file, "r") as f:

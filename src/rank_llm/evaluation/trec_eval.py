@@ -5,8 +5,8 @@ import tempfile
 from typing import List
 
 import pandas as pd
-from pyserini.search import get_qrels_file
-from pyserini.util import download_evaluation_script
+# from pyserini.search import get_qrels_file
+# from pyserini.util import download_evaluation_script
 
 from rank_llm.data import Result
 
@@ -60,15 +60,15 @@ class EvalFunction:
         Returns:
             str: Path to the truncated qrels file.
         """
-        qrels = get_qrels_file(qrels)
+        # qrels = get_qrels_file(qrels)
         run = pd.read_csv(run, sep="\s+", header=None)
-        qrels = pd.read_csv(qrels, sep="\s+", header=None)
+        # qrels = pd.read_csv(qrels, sep="\s+", header=None)
         run[0] = run[0].astype(str)
-        qrels[0] = qrels[0].astype(str)
+        # qrels[0] = qrels[0].astype(str)
 
-        qrels = qrels[qrels[0].isin(run[0])]
+        # qrels = qrels[qrels[0].isin(run[0])]
         temp_file = tempfile.NamedTemporaryFile(delete=False).name
-        qrels.to_csv(temp_file, sep="\t", header=None, index=None)
+        # qrels.to_csv(temp_file, sep="\t", header=None, index=None)
         return temp_file
 
     @staticmethod
@@ -83,8 +83,8 @@ class EvalFunction:
         Returns:
             str: Evaluation results as a string.
         """
-        script_path = download_evaluation_script("trec_eval")
-        cmd_prefix = ["java", "-jar", script_path]
+        # script_path = download_evaluation_script("trec_eval")
+        # cmd_prefix = ["java", "-jar", script_path]
         # args = sys.argv
 
         # Option to discard non-judged hits in run file
@@ -111,7 +111,8 @@ class EvalFunction:
                 print("Trunc", args[-2])
 
             if not os.path.exists(args[-2]):
-                args[-2] = get_qrels_file(args[-2])
+                pass
+                # args[-2] = get_qrels_file(args[-2])
             if os.path.exists(args[-1]):
                 # Convert run to trec if it's on msmarco
                 with open(args[-1]) as f:
@@ -157,26 +158,26 @@ class EvalFunction:
                 ) / len(run_cutoff)
                 metric_name = f"judged_{cutoff}"
                 judged_result.append(f"{metric_name:22}\tall\t{judged:.4f}")
-            cmd = cmd_prefix + args[1:]
-        else:
-            cmd = cmd_prefix
+            # cmd = cmd_prefix + args[1:]
+        # else:
+            # cmd = cmd_prefix
 
-        print(f"Running command: {cmd}")
+        # print(f"Running command: {cmd}")
         shell = platform.system() == "Windows"
-        process = subprocess.Popen(
-            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=shell
-        )
-        stdout, stderr = process.communicate()
-        if stderr:
-            print(stderr.decode("utf-8"))
+        # process = subprocess.Popen(
+        #     cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=shell
+        # )
+        # stdout, stderr = process.communicate()
+        # if stderr:
+        #     print(stderr.decode("utf-8"))
 
-        print("Results:")
-        results = stdout.decode("utf-8").rstrip()
-        print(results)
+        # print("Results:")
+        # results = stdout.decode("utf-8").rstrip()
+        # print(results)
 
         for judged in judged_result:
             print(judged)
 
         if temp_file:
             os.remove(temp_file)
-        return results
+        return #results

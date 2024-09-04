@@ -3,7 +3,7 @@ import os
 import urllib.request
 from urllib.parse import urlparse
 
-from pyserini.util import *
+# from pyserini.util import *
 
 
 def no_bool_convert(pairs):
@@ -12,23 +12,23 @@ def no_bool_convert(pairs):
 
 def parse_file_info(file_name, file_url, save_dir):
     # download file
-    local_file_path = download_url(
-        file_url, save_dir, local_filename=file_name, verbose=True
-    )
+    # local_file_path = download_url(
+    #     file_url, save_dir, local_filename=file_name, verbose=True
+    # )
 
-    # Compute MD5
-    md5 = compute_md5(local_file_path)
+    # # Compute MD5
+    # md5 = compute_md5(local_file_path)
 
-    # Get file size
-    size = os.path.getsize(local_file_path)
+    # # Get file size
+    # size = os.path.getsize(local_file_path)
 
-    # Remove the downloaded file
-    os.remove(local_file_path)
+    # # Remove the downloaded file
+    # os.remove(local_file_path)
 
-    # Placeholder description
-    description = "Sample description"
+    # # Placeholder description
+    # description = "Sample description"
 
-    return description, md5, size
+    return #description, md5, size
 
 
 # Save directory

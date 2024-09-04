@@ -11,7 +11,7 @@ sys.path.append(parent)
 from rank_llm.analysis.estimate_costs import EstimationMode
 from rank_llm.rerank import PromptMode
 from rank_llm.rerank.listwise import SafeOpenai
-from rank_llm.retrieve import TOPICS, PyseriniRetriever, RetrievalMethod
+from rank_llm.retrieve import TOPICS, RetrievalMethod
 
 
 def main(args):
@@ -26,8 +26,8 @@ def main(args):
     costs = {}
     for dataset in TOPICS.keys():
         print("#" * 20)
-        retriever = PyseriniRetriever(dataset, retrieval_method)
-        num_queries = retriever.num_queries()
+        # retriever = PyseriniRetriever(dataset, retrieval_method)
+        # num_queries = retriever.num_queries()
         agent = SafeOpenai(
             model=model_name,
             context_size=context_size,
@@ -40,21 +40,22 @@ def main(args):
         )
         if estimation_mode == EstimationMode.CREATE_PROMPTS:
             print("Reterieving candidates:")
-            retrieved_results = retriever.retrieve(k=top_k_candidates)
+            # retrieved_results = retriever.retrieve(k=top_k_candidates)
             # For dl20 the number of retrieved results is different from the number of queries/topics.
-            num_queries = len(retrieved_results)
+            # num_queries = len(retrieved_results)
             print("Estimating cost by prompt generation:")
-            cost, token_count = agent.get_ranking_cost(
-                retrieved_results, rank_start=0, rank_end=100, window_size=20, step=10
-            )
+            # cost, token_count = agent.get_ranking_cost(
+            #     retrieved_results, rank_start=0, rank_end=100, window_size=20, step=10
+            # )
         elif estimation_mode == EstimationMode.MAX_CONTEXT_LENGTH:
-            cost, token_count = agent.get_ranking_cost_upperbound(
-                num_queries, rank_start=0, rank_end=100, window_size=20, step=10
-            )
+            pass
+            # cost, token_count = agent.get_ranking_cost_upperbound(
+            #     num_queries, rank_start=0, rank_end=100, window_size=20, step=10
+            # )
         else:
             raise ValueError(f"Invalide estimation mode: {estimation_mode}")
-        costs[str((dataset, num_queries, token_count))] = cost
-        print(f"The cost is {cost} USD for {token_count} tokens.")
+        # costs[str((dataset, num_queries, token_count))] = cost
+        # print(f"The cost is {cost} USD for {token_count} tokens.")
         print("#" * 20)
         print("\n\n")
     print(

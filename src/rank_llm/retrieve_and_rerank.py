@@ -2,7 +2,7 @@ import copy
 from typing import Any, Dict, List, Union
 
 from rank_llm.data import Query, Request
-from rank_llm.evaluation.trec_eval import EvalFunction
+# from rank_llm.evaluation.trec_eval import EvalFunction
 from rank_llm.rerank import IdentityReranker, RankLLM, Reranker
 from rank_llm.rerank.reranker import extract_kwargs
 from rank_llm.retrieve import (
@@ -16,15 +16,11 @@ from rank_llm.retrieve import (
 
 def retrieve_and_rerank(
     model_path: str,
-    dataset: Union[str, List[str], List[Dict[str, Any]]],
-    retrieval_mode: RetrievalMode = RetrievalMode.DATASET,
-    retrieval_method: RetrievalMethod = RetrievalMethod.BM25,
-    top_k_retrieve: int = 50,
-    top_k_rerank: int = 10,
+    top_k_retrieve: int = 5,
+    top_k_rerank: int = 5,
     shuffle_candidates: bool = False,
     print_prompts_responses: bool = False,
-    query: str = "",
-    qid: int = 1,
+    requests: List[Request] = None,
     num_passes: int = 1,
     interactive: bool = False,
     default_agent: RankLLM = None,
@@ -36,24 +32,11 @@ def retrieve_and_rerank(
         - List of top_k_rerank candidates
     """
 
+
     # Get reranking agent
     reranker = Reranker(
-        Reranker.create_agent(model_path.lower(), default_agent, interactive, **kwargs)
+        Reranker.create_agent(model_path.lower(), default_agent, interactive, num_gpus = 4, **kwargs)
     )
-
-    # Retrieve initial candidates
-    print(f"Retrieving top {top_k_retrieve} passages...")
-    requests = retrieve(
-        top_k_retrieve,
-        interactive,
-        retrieval_mode,
-        retrieval_method,
-        query,
-        qid,
-        dataset=dataset,
-        **kwargs,
-    )
-    print(f"Retrieval complete!")
 
     # Reranking stage
     print(f"Reranking and returning {top_k_rerank} passages with {model_path}...")
@@ -89,43 +72,13 @@ def retrieve_and_rerank(
         for rr in rerank_results:
             rr.candidates = rr.candidates[:top_k_rerank]
 
-        # generate trec_eval file & evaluate for named datasets only
-        if isinstance(dataset, str):
-            file_name = reranker.write_rerank_results(
-                retrieval_method.name,
-                rerank_results,
-                shuffle_candidates,
-                top_k_candidates=top_k_retrieve,
-                pass_ct=None if num_passes == 1 else pass_ct,
-                window_size=kwargs.get("window_size", None),
-                dataset_name=dataset,
-            )
-            if (
-                dataset in TOPICS
-                and dataset not in ["dl22", "dl22-passage", "news"]
-                and TOPICS[dataset] not in ["dl22", "dl22-passage", "news"]
-            ):
-                print("Evaluating:")
-                EvalFunction.eval(
-                    ["-c", "-m", "ndcg_cut.1", TOPICS[dataset], file_name]
-                )
-                EvalFunction.eval(
-                    ["-c", "-m", "ndcg_cut.5", TOPICS[dataset], file_name]
-                )
-                EvalFunction.eval(
-                    ["-c", "-m", "ndcg_cut.10", TOPICS[dataset], file_name]
-                )
-            else:
-                print(f"Skipping evaluation as {dataset} is not in TOPICS.")
-
     print(f"Reranking with {num_passes} passes complete!")
 
     if interactive:
         return (rerank_results, reranker.get_agent())
     else:
         return rerank_results
-
-
+    
 def retrieve(
     top_k_retrieve: int = 50,
     interactive: bool = False,
